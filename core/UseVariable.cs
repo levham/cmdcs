@@ -4,13 +4,24 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 namespace Core
-{
+{ 
     public class UseVariable
     { 
 
-        public string ReplaceVariables(string girdi)
+public string ReplaceVariables(string girdi, Dictionary<string, string> geciciDegiskenler = null)
 {
     string sonuc = girdi;
+
+    // 0. Geçici değişkenler varsa önce onları uygula
+    if (geciciDegiskenler != null)
+    {
+        foreach (var kvp in geciciDegiskenler)
+        {
+            string target = "$" + kvp.Key;
+            sonuc = sonuc.Replace(target, kvp.Value);
+        }
+    }
+
 
     // 1. Dizi elemanları: $dizi[2]
     int start = sonuc.IndexOf("$");
@@ -115,8 +126,36 @@ foreach (var kvp in Lib.stringArrays)
 }
 
 
+/*
+
+MatchCollection kalanlar = Regex.Matches(sonuc, @"\$(\w+)");
+foreach (Match m in kalanlar)
+{
+    string key = m.Groups[1].Value;
+
+    bool tanimli =
+        (geciciDegiskenler != null && geciciDegiskenler.ContainsKey(key)) ||
+        Lib.degiskenler.ContainsKey(key) ||
+        Lib.intArrays.ContainsKey(key) ||
+        Lib.stringArrays.ContainsKey(key);
+
+    if (!tanimli)
+    {
+        // Eğer geçici değişkenler içinde varsa uyarı verme
+        Console.WriteLine("Hata: Tanımsız değişken: $" + key);
+    }
+}
+
+*/
+
+
+
+
     return sonuc;
 }
+
+
+
 
     }
 }

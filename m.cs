@@ -10,24 +10,14 @@ class m
 {
     static void Main()
     {
-        //connect lib
-        Lib lib = new Lib();
+        /// connect lib
+            Lib lib = new Lib();
 
-        //colourful text
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-        Console.WriteLine("Microsoft Windows [Version 10.0.19045.6456]");
-        Console.WriteLine("(c) Microsoft Corporation. Tüm hakları saklıdır.");
-
-        //colourful text
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine();
-
-        //text hdd and text date time
-        Console.WriteLine("                    " + lib.Hdd() + " " + DateTime.Now.ToString());
-        Console.WriteLine();
-
+        /// diplay for cmdcs
+            lib.display();
+       
         //step number is "colourful text number" for cmdcs command line .
-        int stepnumber = 0;
+            int stepnumber = 0;
 
         while (true)
         {
@@ -44,91 +34,63 @@ class m
                 string girdi = Console.ReadLine();
                 girdi=girdi.Trim();
 
-bool isHandled = false;
-
-if (string.IsNullOrWhiteSpace(girdi)) continue;
-
-if (girdi == "help2") {
-    lib.help2();
-    isHandled = true;
-}
-else if (girdi == "hdd") {
-    Console.WriteLine(lib.Hdd() + "gb free ");
-    isHandled = true;
-}
-else if (lib.setfind(girdi)) isHandled = true;
-else if (lib.find_intarray(girdi)) isHandled = true;
-else if (lib.find_stringarray(girdi)) isHandled = true;
-else if (lib.find_int(girdi)) isHandled = true;
-else if (lib.find_string(girdi)) isHandled = true;
-else if (lib.cmdTernary(girdi)) isHandled = true;
-
-// Foreach en sona alındı
-if (!isHandled)
-{
-    var foreachChecker = new ForeachCommand();
-    
-    if (lib.foreachCmd(girdi)) isHandled = true;
-    else if (girdi.StartsWith("foreach"))
-    {
-        var checker = new ForeachCommand();
-        if (!checker.CanExecute(girdi))
-            Console.WriteLine("Foreach komutu geçersiz veya dizi tanımlı değil.");
-        isHandled = true;
-    }
-
-}
-
- 
-
-if (!isHandled)
-{
-    string ifade = Lib.UseVariable(girdi);
-    lib.CalistirVeYazdir(ifade);
-}
-
-
-
-
-    /*
+                bool isHandled = false;
                 if (string.IsNullOrWhiteSpace(girdi)) continue;
-               
-            /// cmdcs help content
-                if (girdi == "help2") {
-                    lib.help2();
-                    continue;
-                }
+
+            /// cls for cmdcs
+                if (girdi == "cls") { lib.cls(); continue; }
+
+
+            /// help for cmdcs
+                if (girdi == "help2") { lib.help2(); isHandled = true;  }
+                if (girdi == "help3") { lib.help3(); isHandled = true;  }
 
             /// hdd free disk usage
-                if (girdi == "hdd") {
-                    Console.WriteLine(lib.Hdd()+"gb free ");
-                    continue;
-                }
+                else if (girdi == "hdd") { Console.WriteLine(lib.Hdd() + "gb free "); isHandled = true;}
 
             /// set a = 
-                if (lib.setfind(girdi)) continue;
+                else if (lib.setfind(girdi)) isHandled = true;
 
             //int[]
-                if (lib.find_intarray(girdi)) continue;
+                else if (lib.find_intarray(girdi)) isHandled = true;
             //string[]
-                if (lib.find_stringarray(girdi)) continue;
-
+                else if (lib.find_stringarray(girdi)) isHandled = true;
             //int a=
-                if (lib.find_int(girdi)) continue;
+                else if (lib.find_int(girdi)) isHandled = true;
             //string a=
-                if (lib.find_string(girdi)) continue;
+                else if (lib.find_string(girdi)) isHandled = true;
+            
+            /// dir | find "m" ? echo evet : echo hayır
+                else if (lib.cmdTernary(girdi)) isHandled = true;
 
             /// foreach ($a in $d[])
-            if (lib.foreachCmd(girdi)) continue;
- 
-            /// dir | find "m" ? echo evet : echo hayır
-                if (lib.cmdTernary(girdi)) continue;
+                if (lib.foreachCmd(girdi))
+                {
+                    isHandled = true;
+                }
 
-           ///run cmd code 
-                string ifade = Lib.UseVariable(girdi);
-                lib.CalistirVeYazdir(ifade);
- 
-*/
+            /// for ( int i=0; i<5 ;i++){ echo $i  }   
+                if (lib.forCmd(girdi))
+                {
+                    isHandled = true;
+                }
+            /// dowhile
+                if (lib.doWhileCmd(girdi))
+                {
+                    isHandled = true;
+                }
+
+            /// while
+                if (lib.whileCmd(girdi)) // YENİ EKLENECEK KONTROL
+                {
+                    isHandled = true;
+                }
+
+            /// run cmd code 
+                if (!isHandled) { 
+                        string ifade = Lib.UseVariable(girdi);
+                        lib.CalistirVeYazdir(ifade);
+                }
 
         }
     }
