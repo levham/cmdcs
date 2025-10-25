@@ -1,4 +1,4 @@
-# CmdCs - Advanced Command Line Interpreter (v.1.12.x)
+# CmdCs - Command Line Interpreter (v.1.12.x)
 
 [_Turkish.v.1.12_](document_cmdcs_v.1.12.x.tr.md)
 [_English v.1.12_](document_cmdcs_v.1.12.x.ing.md)
