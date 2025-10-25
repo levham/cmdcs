@@ -1,6 +1,6 @@
 # CmdCs - Komut Satırı Yorumlayıcısı (v.1.12.x)
 
-[_English v.1.12_](core/document_cmdcs_v.1.12.x.ing.md)
+[_English v.1.12_](document_cmdcs_v.1.12.x.ing.md)
 
 `CmdCs`, standart Windows komut satırının (CMD) yeteneklerini C# benzeri sözdizimi ile zenginleştiren ve bu komutları çalıştırılabilir Batch (`.bat`) dosyalarına çevirebilen gelişmiş bir komut satırı aracıdır. Bu proje, hem interaktif bir kabuk olarak çalışabilir hem de C# benzeri döngü ve değişken mantığını içeren kod bloklarını alıp doğrudan `.bat` script'lerine dönüştürebilir.
 
