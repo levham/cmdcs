@@ -71,7 +71,7 @@ namespace Core
                     if (new SetFind().FindSet(trimmed)) continue;
 
                     // CMD'ye gönder
-                    string cikti = Lib.RunCmd(trimmed);
+                    string cikti = CalistirCmd.RunCmd(trimmed);
                     Console.WriteLine("  " + cikti);
                 }
 

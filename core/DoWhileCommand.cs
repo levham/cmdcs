@@ -3,6 +3,10 @@ using System.Text.RegularExpressions;
 
 namespace Core
 {
+    /// <summary>
+    /// do-while döngü yapısını işler ve döngü komutlarını çalıştırır.
+    /// Format: do {komut_1 && komut_2} while (koşul) {komut_3 && komut_4}
+    /// </summary>
     public class DoWhileCommand
     {
         public bool Execute(string girdi)
@@ -12,6 +16,8 @@ namespace Core
                 return false;
 
             // do, while ve body bloklarını ayıkla
+            // NOT: Regex, do bloğu ve loop bloğu için farklı süslü parantez grupları bekliyor.
+            // Bu format, mevcut komut yapınızla tutarlı kabul edilmiştir.
             Match match = Regex.Match(girdi, @"do\s*{(?<body>.*)}\s*while\s*\((?<condition>.*)\)\s*{(?<loop>.*)}", RegexOptions.Singleline);
 
             if (!match.Success) return false;
@@ -20,13 +26,16 @@ namespace Core
             string condition = match.Groups["condition"].Value.Trim();
             string loopBody = match.Groups["loop"].Value.Trim();
 
-            var evaluator = new EvaluateMath(); // Bu sınıfın sizde olduğunu varsayıyorum.
+            // EvaluateMath ve Lib nesnesi (gerektiğinde)
+            // Varsayım: EvaluateMath sınıfınız mevcuttur.
+            var evaluator = new EvaluateMath(); 
+            Lib lib = new Lib();
 
             // 1. DO BLOĞUNU BİR KERE ÇALIŞTIR
-            ExecuteCommands(doBlock);
+            ExecuteCommands(doBlock, lib);
 
             // 2. WHILE DÖNGÜSÜ
-            int loopLimiter = 0; // Sonsuz döngüleri engellemek için bir güvenlik önlemi
+            int loopLimiter = 0; 
             while (true)
             {
                 loopLimiter++;
@@ -36,50 +45,52 @@ namespace Core
                     break;
                 }
 
-                // DEĞİŞTİ: Koşul içindeki değişkenleri değerleriyle değiştiriyoruz ($i -> 0 gibi)
+                // Koşul içindeki değişkenleri değerleriyle değiştiriyoruz
                 string resolvedCondition = Lib.UseVariable(condition);
 
                 try
                 {
-                    // Değerlendirme sonucu boolean değilse döngüden çık
+                    // Koşul çözümlenir.
                     if (!Convert.ToBoolean(evaluator.Evaluate(resolvedCondition)))
                         break;
                 }
                 catch
                 {
-                    Console.WriteLine("Hata: Koşul çözümlenemedi: " + resolvedCondition);
+                    Console.WriteLine("Hata: Koşul çözümlenemedi veya hatalı matematiksel ifade içeriyor: " + resolvedCondition);
                     break;
                 }
 
                 // Döngü içeriğini çalıştır
-                ExecuteCommands(loopBody);
+                ExecuteCommands(loopBody, lib);
             }
 
             return true;
         }
 
-        // YENİ: Komutları yürüten yardımcı bir metot ekledik
-      private void ExecuteCommands(string commands)
-{
-    // BURADA DEĞİŞKENLER ÇÖZÜMLENİYOR
-   // string expandedCommands = Lib.UseVariable(commands);
-         
+        /// <summary>
+        /// Tek bir komut bloğu içindeki komutları (&& ile ayrılmış) sırayla yürüten yardımcı metot.
+        /// </summary>
+        private void ExecuteCommands(string commands, Lib lib)
+        {
             string[] commandList = commands.Split(new[] { "&&" }, StringSplitOptions.RemoveEmptyEntries);
-
+            
             foreach (var cmd in commandList)
             {
                 string trimmedCmd = cmd.Trim();
                 if (string.IsNullOrWhiteSpace(trimmedCmd)) continue;
-        if (new SetFind().FindSet(trimmedCmd)) continue; 
 
-                // YENİ: i++ ve i-- gibi artırma/azaltma işlemlerini burada yakalıyoruz
-        Match incrementMatch = Regex.Match(trimmedCmd, @"^(\w+)(\+\+|--)$");
+                // 1. SET KOMUTU KONTROLÜ
+                // Lib'deki yönlendirici metodu kullanıyoruz.
+                if (lib.setfind(trimmedCmd)) continue; // SetFind'i direkt çağırmaktan kaçınılır.
+
+                // 2. ARTIRMA/AZALTMA İŞLEMLERİ (i++ / i--)
+                Match incrementMatch = Regex.Match(trimmedCmd, @"^(\w+)(\+\+|--)$");
                 if (incrementMatch.Success)
                 {
                     string varName = incrementMatch.Groups[1].Value;
                     string operation = incrementMatch.Groups[2].Value;
                     
-                    // DÜZELTME: 'out' değişkenleri C# 5 uyumluluğu için dışarıda tanımlandı.
+                    // C# 5.0 uyumluluğu için out değişkenleri dışarıda tanımlandı.
                     string currentValueStr;
                     int currentValue;
 
@@ -97,28 +108,23 @@ namespace Core
                     }
                     else
                     {
-                        // DÜZELTME: C# eski versiyonları için $ kullanımı kaldırıldı.
                         Console.WriteLine("Hata: '" + varName + "' değişkeni bulunamadı veya sayısal değil.");
                     }
                     continue; // Bu komut işlendi, sıradakine geç
                 }
-
-
-        // 3. Diğer tüm komutları çalıştırırken DEĞİŞKEN ÇÖZÜMLEME yap
-        string ifade = Lib.UseVariable(trimmedCmd); // Komutu çalıştırmadan hemen önce çözümlüyoruz.
-        
-        // Sadece değişken çözümleme boş döndüyse ve komut boş değilse çalıştır.
-        if (!string.IsNullOrWhiteSpace(ifade))
-        {
-             // Diğer tüm komutları cmd.exe'de çalıştır
-             string result = Lib.RunCmd(ifade);
-             if (!string.IsNullOrWhiteSpace(result))
-             {
-                 Console.WriteLine("  " + result.Trim());
-             }
-        }
+                
+                // 3. DİĞER KOMUTLAR (echo, dir, vb.)
+                
+                // Komutu çalıştırmadan hemen önce değişken çözümleme yapılır
+                string ifade = Lib.UseVariable(trimmedCmd);
+                
+                // Çalıştırılabilir bir ifade varsa, Lib'in formatlayıcı metodunu kullan
+                if (!string.IsNullOrWhiteSpace(ifade))
+                {
+                    // Komutu CalistirCmd.RunCmd ile çalıştırıp çıktısını formatlı (paddingli) şekilde yazdırır.
+                    lib.CalistirVeYazdir(ifade);
+                }
             }
         }
     }
 }
-

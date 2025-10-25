@@ -99,7 +99,7 @@ namespace Core
                 
                if (!string.IsNullOrWhiteSpace(ifade))
 		        {
-		             string result = Lib.RunCmd(ifade);
+		             string result = CalistirCmd.RunCmd(ifade);
 
 		             if (!string.IsNullOrWhiteSpace(result))
 		             {

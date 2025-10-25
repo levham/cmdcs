@@ -49,7 +49,7 @@ public bool Execute(string girdi)
     {
         string temp = govde.Replace("$" + itemName, eleman);
         string ifade = Lib.UseVariable(temp);
-        string cikti = Lib.RunCmd(ifade);
+        string cikti = CalistirCmd.RunCmd(ifade);
         Console.WriteLine("  " + cikti);
     }
 
