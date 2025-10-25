@@ -25,11 +25,13 @@ class Program
         string settingsPath = Path.Combine(baseDirectory, "Setting.txt");
         Lib.InitConfig(settingsPath);
 
-        // Ayar dosyasından okunan değeri ve hangi ekranın yüklendiğini teyit etmek için bir mesaj ekleyelim.
-        // Renk ayarını da dosyadan alalım.
-        Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), Lib.Config.LineColor[0], true);
+        //Console.WriteLine("Sayfa: " + Lib.Config.DefaultPage);
 
-        Console.WriteLine();
+        // if (Lib.Config.Note) Console.WriteLine("Alt bölüm gösteriliyor.");
+        //else Console.WriteLine("Alt bölüm gizli.");
+
+        Console.ForegroundColor = (ConsoleColor)Enum.Parse(typeof(ConsoleColor), Lib.Config.LineColor[0]);
+        //Console.WriteLine("Renkli yazı: Merhaba!");
         Console.ResetColor();
 
 
@@ -62,6 +64,12 @@ class Program
 
             bool isHandled = false;
             if (string.IsNullOrWhiteSpace(girdi)) continue;
+
+            // Yorum satırlarını atla (# veya // ile başlayanlar)
+            if (girdi.StartsWith("#") || girdi.StartsWith("//"))
+            {
+                continue;
+            }
 
 
 

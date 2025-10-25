@@ -30,6 +30,12 @@ You can customize the application's behavior by editing the `Setting.txt` file.
 
 After running the program, you can type commands directly into the console to get immediate results. In this mode, commands are interpreted and executed on the C# side.
 
+**Comment Line:**
+```bash
+# comment
+// comment
+```
+
 **Variable Declaration and Usage:**
 
 ```bash

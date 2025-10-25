@@ -30,6 +30,12 @@ Uygulamanın davranışını `Setting.txt` dosyasını düzenleyerek özelleşti
 
 Programı çalıştırdıktan sonra komutları doğrudan konsola yazarak anında sonuç alabilirsiniz. Bu modda komutlar C# tarafında yorumlanır ve çalıştırılır.
 
+**Yorum Satırı:**
+```bash
+# yorum
+// yorum
+```
+
 **Değişken Tanımlama ve Kullanma:**
 
 ```bash
