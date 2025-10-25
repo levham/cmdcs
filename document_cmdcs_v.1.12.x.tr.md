@@ -26,17 +26,23 @@ Uygulamanın davranışını `Setting.txt` dosyasını düzenleyerek özelleşti
 
 ## 🚀 Kullanım
 
-### 1. Etkileşimli Mod (Interactive Mode)
+## Genel
 
-Programı çalıştırdıktan sonra komutları doğrudan konsola yazarak anında sonuç alabilirsiniz. Bu modda komutlar C# tarafında yorumlanır ve çalıştırılır.
+| Komut            | Açıklama                                         |
+| ---------------- | ------------------------------------------------ |
+| `help2`, `help3` | Yardım menülerini gösterir.                      |
+| `hdd`            | C sürücüsündeki boş alanı GB cinsinden gösterir. |
+| `cls`            | Ekranı temizler.                                 |
+| # yorum          | Yorum satırı.                                    |
+| // yorum         | Yorum satırı.                                    |
 
-**Yorum Satırı:**
-```bash
-# yorum
-// yorum
-```
+## Değişken
 
-**Değişken Tanımlama ve Kullanma:**
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| `set a=10` | Bir değişken tanımlar. Matematiksel ifadeler de kullanılabilir. |
+| `int a=10` | Tamsayı (integer) tipinde bir değişken tanımlar. |
+| `string a="hello"` | Metin (string) tipinde bir değişken tanımlar. |
+| `echo $a` | `a` değişkeninin değerini ekrana basar. |
 
 ```bash
 # Sayısal bir değişken tanımla
@@ -51,6 +57,35 @@ set j = $i * 2
 # j'nin değerini gör
 echo $j
 ```
+
+## Dizi
+
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| `int[] nums={1,2,3}` | Tamsayı dizisi tanımlar. |
+| `string[] arr={"a","b"}` | Metin dizisi tanımlar. |
+
+```bash
+# Sayısal bir değişken tanımla
+int[] nums={1,2,3}
+
+# Metin bir değişken tanımla
+string[] arr={"a","b"}
+
+# Değişkenin değerini ekrana yazdır
+echo $nums
+
+# Değişkenin değerini ekrana yazdır
+echo $arr
+
+```
+
+## Döngüler
+
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| `for (int i=0; i<5; i++){...}` | Belirtilen koşul sağlandığı sürece kod bloğunu çalıştıran `for` döngüsü. |
+| `while ($i<5){...}` | Koşul doğru olduğu sürece çalışan `while` döngüsü. |
+| `do {...} while ($i<5){...}` | Önce bloğu çalıştırıp sonra koşulu kontrol eden `do-while` döngüsü. |
+| `foreach ($item in $arr[]){...}` | Bir dizi içerisindeki her bir eleman için kod bloğunu çalıştırır. |
 
 **For Döngüsü:**
 
@@ -67,9 +102,38 @@ int i=0
 while ($i < 5) { echo $i && i++ }
 ```
 
-### 2. Batch (.bat) Dosyası Oluşturma
+**Do While Döngüsü:**
 
-`CmdCs`'in en güçlü özelliklerinden biri, yazdığınız C# benzeri kodları çalıştırılabilir bir `.bat` dosyasına çevirmesidir. Bu, `public class` sözdizimi ile yapılır. Bu modda yazılan `for` ve `while` gibi yapılar, `BatchTranslator` tarafından `GOTO` ve `IF` komutları içeren saf Batch koduna dönüştürülür.
+```csharp
+# do bloğu bir kez çalışır, ardından while koşulu doğru olduğu sürece döngü devam eder.
+ do { set i=0 } while ( $i < 5 ) { echo $i && i++ }
+```
+
+**Foreach Döngüsü:**
+
+```csharp
+# a dizisini foreach ile gezerek her bir elemanı ekrana yazdırır
+ int[] a={1,2,3}
+ foreach ($b in $a[]) { echo $b }
+
+```
+
+## Ternary
+
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| `dir \| find "test" ? echo Var : echo Yok` | `dir` komutunun çıktısında "test" varsa "Var", yoksa "Yok" yazar. |
+
+```bash
+# dir komutunun çıktısını kontrol eder
+ dir | find "z" ? echo evet : echo hayır
+```
+
+## Dosya yazıcı
+
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| `public class Ad : uzanti { ... }` | Belirtilen ad ve uzantıda bir dosya oluşturur ve içerik yazma modunu başlatır. `}` ile sonlanır. |
+
+`CmdCs`'in geliştirlmesi gereken özelliklerinden biri, yazdığınız C# benzeri kodları çalıştırılabilir bir `.bat` dosyasına çevirmeyi hedeflicek. Bu, `public class` sözdizimi ile yapılır.
 
 **Örnek:**
 Aşağıdaki komutları `CmdCs` konsoluna girdiğinizde, `DonguTest.bat` adında bir dosya oluşturulacaktır.
@@ -84,9 +148,7 @@ Aşağıdaki komutları `CmdCs` konsoluna girdiğinizde, `DonguTest.bat` adında
 
     ```csharp
     rem Bu bir for dongusu testidir
-    for (int i=0; i<5; i++) {
-        echo Sayac: $i
-    }
+    rem herhangi bat komutları
     echo Dongu bitti!
     ```
 
@@ -100,37 +162,6 @@ Aşağıdaki komutları `CmdCs` konsoluna girdiğinizde, `DonguTest.bat` adında
 ```batch
 @echo off
 rem Bu bir for dongusu testidir
-rem For Loop Baslangic
-set /a i=0
-:FOR_START_1
-IF NOT %i% LSS 5 GOTO FOR_END_1
-echo Sayac: %i%
-set /a i=%i%+1
-GOTO FOR_START_1
-:FOR_END_1
+rem herhangi bat komutları
 echo Dongu bitti!
-
-GOTO :EOF
 ```
-
-Bu dosyayı çalıştırdığınızda, `CmdCs` olmadan standart bir Windows ortamında bile döngünün çalıştığını göreceksiniz.
-
-## 📚 Komut Referansı
-
-| Komut                                      | Açıklama                                                                                         |
-| ------------------------------------------ | ------------------------------------------------------------------------------------------------ |
-| `set a=10`                                 | Bir değişken tanımlar. Matematiksel ifadeler de kullanılabilir.                                  |
-| `int a=10`                                 | Tamsayı (integer) tipinde bir değişken tanımlar.                                                 |
-| `string a="hello"`                         | Metin (string) tipinde bir değişken tanımlar.                                                    |
-| `echo $a`                                  | `a` değişkeninin değerini ekrana basar.                                                          |
-| `int[] nums={1,2,3}`                       | Tamsayı dizisi tanımlar.                                                                         |
-| `string[] arr={"a","b"}`                   | Metin dizisi tanımlar.                                                                           |
-| `for (int i=0; i<5; i++){...}`             | Belirtilen koşul sağlandığı sürece kod bloğunu çalıştıran `for` döngüsü.                         |
-| `while ($i<5){...}`                        | Koşul doğru olduğu sürece çalışan `while` döngüsü.                                               |
-| `do {...} while ($i<5){...}`               | Önce bloğu çalıştırıp sonra koşulu kontrol eden `do-while` döngüsü.                              |
-| `foreach ($item in $arr[]){...}`           | Bir dizi içerisindeki her bir eleman için kod bloğunu çalıştırır.                                |
-| `dir \| find "test" ? echo Var : echo Yok` | `dir` komutunun çıktısında "test" varsa "Var", yoksa "Yok" yazar.                                |
-| `public class Ad : uzanti { ... }`         | Belirtilen ad ve uzantıda bir dosya oluşturur ve içerik yazma modunu başlatır. `}` ile sonlanır. |
-| `help2`, `help3`                           | Yardım menülerini gösterir.                                                                      |
-| `cls`                                      | Ekranı temizler.                                                                                 |
-| `hdd`                                      | C sürücüsündeki boş alanı GB cinsinden gösterir.                                                 |
