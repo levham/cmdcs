@@ -1,7 +1,5 @@
 using System;
 using System.IO;
-using System.Text.RegularExpressions;
-using System.Diagnostics;
 
 namespace Core
 {
@@ -13,32 +11,55 @@ namespace Core
 		public string[] LineColor { get; private set; }
 		public bool Note { get; private set; }
 
-		/// <summary>
-		/// C# 5.0 uyumluluğu için varsayılan değerleri yapıcı metot içinde atar.
-		/// </summary>
 		public Config()
 		{
-			DefaultPage = "Display.cs";
+			DefaultPage = "Display1";
 			LineColor = new string[] { "Yellow", "White" };
 			Note = false;
 		}
 		public void Load(string path)
 		{
-			var lines = File.ReadAllLines(path);
-			foreach (var line in lines)
+			try
 			{
-				if (line.StartsWith("defaultpage="))
-					DefaultPage = line.Substring(line.IndexOf('=') + 1).Trim();
-				else if (line.StartsWith("note="))
+				if (!File.Exists(path))
 				{
-					// C# 7.0 öncesi uyumluluk için 'out' değişkeni önceden tanımlanmalıdır.
-					bool noteValue;
-					bool.TryParse(line.Substring(line.IndexOf('=') + 1).Trim(), out noteValue);
-					Note = noteValue;
+					Console.ForegroundColor = ConsoleColor.Red;
+					Console.WriteLine("[HATA] Ayar dosyasi bulunamadi: " + path);
+					Console.WriteLine("[BİLGİ] Varsayılan ayarlar kullanılıyor (DefaultPage=Display1).");
+					Console.ResetColor();
+					return;
 				}
-				else if (line.StartsWith("linecolor="))
-					LineColor = line.Substring(line.IndexOf('=') + 1).Trim().Split(',');
+
+				var lines = File.ReadAllLines(path);
+				foreach (var line in lines)
+				{
+					var parts = line.Split('=');
+					if (parts.Length == 2)
+					{
+						var key = parts[0].Trim().ToLower();
+						var value = parts[1].Trim();
+
+						if (key == "defaultpage") DefaultPage = value;
+						else if (key == "note")
+						{
+							bool noteValue;
+							if (bool.TryParse(value, out noteValue))
+							{
+								Note = noteValue;
+							}
+						}
+						else if (key == "linecolor") LineColor = value.Split(',');
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Console.ForegroundColor = ConsoleColor.Red;
+				Console.WriteLine("[HATA] Ayar dosyasi okunurken bir sorun olustu: " + ex.Message);
+				Console.WriteLine("[BİLGİ] Varsayılan ayarlar kullanılıyor.");
+				Console.ResetColor();
 			}
 		}
+
 	}
 }

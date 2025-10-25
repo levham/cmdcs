@@ -26,7 +26,7 @@ namespace Core
             // Ayar dosyasındaki 'defaultpage' değerine göre ilgili display metodunu çağır.
             if (Config.DefaultPage == "Display1")
             {
-                new Display().display();
+                new Display().display1();
             }
             else
             {
